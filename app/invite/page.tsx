@@ -1,0 +1,28 @@
+export const metadata = { title: "Invite" };
+
+export default function InvitePage() {
+  const inviteUrl = process.env.NEXT_PUBLIC_DISCORD_INVITE_URL || "#";
+  const steps = [
+    { n: 1, t: "Click Invite", d: "Open the Discord authorization page." },
+    { n: 2, t: "Choose Your Server", d: "Pick the server where you have Manage Server permission." },
+    { n: 3, t: "Enjoy Music", d: "Use /play to start your first track!" },
+  ];
+  return (
+    <div className="container py-12 text-center">
+      <h1 className="text-3xl md:text-5xl font-extrabold mb-4">Add Swelly to Your Server</h1>
+      <p className="text-white/70 mb-8">Bring premium music features to your community.</p>
+      <a href={inviteUrl} target="_blank" rel="noreferrer" className="btn btn-primary text-lg px-6 py-3">
+        Invite Now
+      </a>
+      <div className="grid sm:grid-cols-3 gap-4 mt-10 text-left">
+        {steps.map((s) => (
+          <div key={s.n} className="card">
+            <div className="text-primary text-2xl font-extrabold">{s.n}</div>
+            <div className="mt-1 font-semibold">{s.t}</div>
+            <div className="text-white/70 text-sm mt-1">{s.d}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

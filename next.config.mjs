@@ -1,4 +1,12 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+	images: {
+		remotePatterns: [
+			{ protocol: 'https', hostname: 'cdn.discordapp.com' },
+			{ protocol: 'https', hostname: 'media.discordapp.net' },
+		],
+	},
+		// no custom webpack aliases
+};
 
 export default nextConfig;
