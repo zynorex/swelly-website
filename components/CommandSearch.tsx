@@ -87,7 +87,7 @@ function ScrollCard({ href, children, index }: { href: string; children: React.R
     <a href={href} className="block">
       {/* Using data attribute + CSS transitions; simple reveal */}
       <div
-        className="card hover:-translate-y-0.5 transition-transform opacity-0 translate-y-2"
+        className="card hover:-translate-y-0.5 transition-transform"
         style={{ transitionDelay: `${index * 30}ms` }}
         data-reveal-card
       >

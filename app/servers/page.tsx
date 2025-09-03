@@ -62,7 +62,7 @@ export default function ServersPage() {
             return (
               <div
                 key={g.id}
-                className="card flex items-center justify-between gap-4 opacity-0 translate-y-2"
+                className="card flex items-center justify-between gap-4"
                 style={{ transitionDelay: `${i * 40}ms` }}
                 data-reveal-card
               >

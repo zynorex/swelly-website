@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Rubik } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Providers from "@/components/providers/Providers";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const rubik = Rubik({ subsets: ["latin"], variable: "--font-display" });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -46,7 +47,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-  className={`${inter.variable} antialiased bg-[var(--background)] text-[var(--foreground)]`}
+        className={`${inter.variable} ${rubik.variable} antialiased bg-[var(--background)] text-[var(--foreground)]`}
       >
         <Providers>
           <Navbar />
