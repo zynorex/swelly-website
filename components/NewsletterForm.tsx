@@ -10,10 +10,18 @@ export default function NewsletterForm() {
     if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return setStatus("error");
     setStatus("sending");
     try {
-      // Placeholder: client-only optimistic UI. Hook up API route later.
-      await new Promise((r) => setTimeout(r, 700));
-      setStatus("sent");
-    } catch (err) {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        setStatus("sent");
+        setEmail("");
+      } else {
+        setStatus("error");
+      }
+    } catch {
       setStatus("error");
     }
   }

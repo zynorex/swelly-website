@@ -1,12 +1,13 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 
-export async function GET(req: Request) {
+export async function GET() {
   const session = await getServerSession(authOptions);
-  if (!session || !(session as any).accessToken) {
+  const maybeToken = (session as unknown as { accessToken?: string })?.accessToken;
+  if (!session || !maybeToken) {
     return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });
   }
-  const token = (session as any).accessToken as string;
+  const token = maybeToken;
   const res = await fetch("https://discord.com/api/users/@me", {
     headers: { Authorization: `Bearer ${token}` },
   });
