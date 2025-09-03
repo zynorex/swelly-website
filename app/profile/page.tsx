@@ -2,10 +2,19 @@
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import LoginInline from "@/components/auth/LoginInline";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function ProfilePage() {
   const { status, data } = useSession();
-  if (status === "loading") return <div className="container py-12">Loading…</div>;
+  if (status === "loading") {
+    return (
+      <div className="container py-12">
+        <div className="flex justify-center">
+          <LoadingSpinner />
+        </div>
+      </div>
+    );
+  }
   if (status !== "authenticated") return (
     <div className="container py-12 text-center">
       <h1 className="text-3xl font-bold mb-4">Profile</h1>

@@ -49,15 +49,23 @@ export default function Navbar() {
     >
       <div className={`container flex items-center justify-between transition-all duration-300 ${scrolled ? "h-12 px-2" : "h-16 px-4"}`}>
         <Link href="/" className="flex items-center gap-2 font-semibold">
+          {/* text logo on md+ screens, compact mascot on small screens */}
           <Image
+            src="/text.png"
+            alt="Swelly"
+            width={scrolled ? 50 : 70}
+            height={scrolled ? 20 : 25}
+            priority
+          />
+          {/* <Image
             src="/swelly1.png"
             alt="Swelly logo"
             width={scrolled ? 24 : 32}
             height={scrolled ? 24 : 32}
-            className="transition-all duration-300 rounded-md shadow-glow"
+            className="md:hidden transition-all duration-300 rounded-md shadow-glow"
             priority
-          />
-          <span className={`transition-all duration-300 ${scrolled ? "text-sm" : "text-lg"}`}>Swelly</span>
+          /> */}
+          {/* <span className={`transition-all duration-300 ${scrolled ? "text-sm" : "text-lg"} hidden sm:inline`}>Swelly</span> */}
         </Link>
         <nav className={`hidden md:flex items-center transition-all duration-300 ${scrolled ? "gap-4 text-[13px]" : "gap-6 text-sm"}`}>
           {links.map((l) => (

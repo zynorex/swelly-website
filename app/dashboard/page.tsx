@@ -1,10 +1,19 @@
 "use client";
 import { useSession } from "next-auth/react";
 import LoginInline from "@/components/auth/LoginInline";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function DashboardPage() {
   const { status } = useSession();
-  if (status === "loading") return <div className="container py-12">Loading…</div>;
+    if (status === "loading") {
+      return (
+        <div className="container py-12">
+          <div className="flex justify-center">
+            <LoadingSpinner />
+          </div>
+        </div>
+      );
+    }
   if (status !== "authenticated")
     return (
       <div className="container py-12 text-center">

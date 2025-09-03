@@ -18,7 +18,7 @@ export default function AuthButton() {
   if (!session) {
     return (
       <button
-        className="btn bg-[#5865F2] hover:bg-[#4752c4] text-white shadow-glow"
+  className="btn bg-[#5865F2] hover:bg-[#4752c4] text-white shadow-glow w-full sm:w-auto"
         onClick={() => signIn("discord")}
       >
         Login with Discord
@@ -37,9 +37,11 @@ export default function AuthButton() {
           className="rounded-full"
         />
       )}
-      <span className="text-sm text-white/80 hidden sm:block">{user.name}</span>
-      <Link href="/servers" className="btn btn-outline hidden md:inline-flex">My Servers</Link>
-      <button className="btn btn-outline" onClick={() => signOut()}>Sign out</button>
+  <span className="text-sm text-white/80 hidden sm:block">{user.name}</span>
+  <Link href="/servers" className="btn btn-outline hidden md:inline-flex">My Servers</Link>
+  <button className="btn btn-outline hidden sm:inline-flex" onClick={() => signOut()}>Sign out</button>
+  {/* On very small screens show a compact sign-out button */}
+  <button className="btn btn-outline sm:hidden" onClick={() => signOut()}>Sign out</button>
     </div>
   );
 }

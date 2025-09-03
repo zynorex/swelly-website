@@ -12,15 +12,17 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         muted: "#cbd5e0",
-        primary: { DEFAULT: "#ef4444", light: "#f87171" },
+        // Switch primary to blurple palette for site-wide consistency
+        primary: { DEFAULT: "#5865F2", light: "#7c6CFF" },
         accent: {
-          teal: "#f97316", // repurposed as warm orange accent
-          violet: "#f43f5e", // repurposed as rose/pink accent
+          teal: "#f97316",
+          violet: "#a78bfa",
         },
         surface: "#111111",
       },
       boxShadow: {
-        glow: "0 0 20px rgba(239, 68, 68, 0.5)",
+  // Theme-matching bluish/purple glow (Discord-like)
+  glow: "0 0 20px rgba(88, 101, 242, 0.35), 0 0 40px rgba(167, 139, 250, 0.25)",
       },
       backgroundImage: {
         aurora: "linear-gradient(135deg, #0d0d10, #2a0000, #1a0a0a)",
