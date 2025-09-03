@@ -2,6 +2,7 @@ export const metadata = { title: "Premium" };
 
 import Image from "next/image";
 import PageHeader from "@/components/layout/PageHeader";
+import PricingCard from "@/components/PricingCard";
 
 export default function PremiumPage() {
   const tiers = [
@@ -46,19 +47,7 @@ export default function PremiumPage() {
       <div className="container py-10">
       <div className="grid md:grid-cols-3 gap-6">
         {tiers.map((t) => (
-          <div key={t.name} className={`card relative ${t.highlight ? "border-primary/40" : ""}`}>
-            {t.highlight && (
-              <div className="absolute -top-3 right-4 text-xs bg-primary text-white px-2 py-1 rounded">Most Popular</div>
-            )}
-            <h3 className="text-xl font-semibold">{t.name}</h3>
-            <div className="text-3xl font-extrabold mt-2">{t.price}</div>
-            <ul className="mt-4 space-y-2 text-white/80 text-sm">
-              {t.features.map((f) => (
-                <li key={f}>• {f}</li>
-              ))}
-            </ul>
-            <button className={`btn w-full mt-6 ${t.highlight ? "btn-primary" : "btn-outline"}`}>{t.cta}</button>
-          </div>
+          <PricingCard key={t.name} name={t.name} price={t.price} features={t.features} highlight={t.highlight} cta={t.cta} />
         ))}
       </div>
         <div className="text-center mt-10">

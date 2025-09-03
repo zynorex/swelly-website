@@ -5,6 +5,7 @@ import FadeIn from "@/components/motion/FadeIn";
 import ParallaxOrbs from "@/components/motion/ParallaxOrbs";
 import ScrollReveal from "@/components/motion/ScrollReveal";
 import CountUp from "@/components/CountUp";
+import NewsletterForm from "@/components/NewsletterForm";
 
 export default function Home() {
   return (
@@ -28,13 +29,22 @@ export default function Home() {
             <p className="mt-4 text-white/70 max-w-2xl mx-auto">
               Crystal-clear audio, powerful queues and filters, and buttery-smooth playback from Spotify, YouTube, Apple Music, and more.
             </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link href="/invite" className="btn btn-primary">Invite Swelly</Link>
-              <a href={process.env.NEXT_PUBLIC_DISCORD_SUPPORT_URL || "#"} className="btn btn-outline" target="_blank" rel="noreferrer">Join Support Server</a>
-              <a href={process.env.NEXT_PUBLIC_TOPGG_URL || "#"} className="btn btn-outline" target="_blank" rel="noreferrer">Vote on Top.gg</a>
+            <div className="mt-8 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3">
+              <Link href="/invite" className="btn btn-primary w-full sm:w-auto">Invite Swelly</Link>
+              <a href={process.env.NEXT_PUBLIC_DISCORD_SUPPORT_URL || "#"} className="btn btn-outline w-full sm:w-auto" target="_blank" rel="noreferrer">Join Support Server</a>
+              <a href={process.env.NEXT_PUBLIC_TOPGG_URL || "#"} className="btn btn-outline w-full sm:w-auto" target="_blank" rel="noreferrer">Vote on Top.gg</a>
               <LoginInline />
             </div>
           </FadeIn>
+        </div>
+      </section>
+
+      {/* Newsletter */}
+      <section className="container py-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <h3 className="text-xl font-semibold">Stay in the loop</h3>
+          <p className="text-white/70 mt-2">Get product updates, new filters, and special offers — once a month.</p>
+          <NewsletterForm />
         </div>
       </section>
 
