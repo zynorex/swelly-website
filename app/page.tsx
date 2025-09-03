@@ -4,6 +4,7 @@ import LoginInline from "@/components/auth/LoginInline";
 import FadeIn from "@/components/motion/FadeIn";
 import ParallaxOrbs from "@/components/motion/ParallaxOrbs";
 import ScrollReveal from "@/components/motion/ScrollReveal";
+import PricingCard from "@/components/PricingCard";
 import CountUp from "@/components/CountUp";
 import NewsletterForm from "@/components/NewsletterForm";
 
@@ -45,6 +46,59 @@ export default function Home() {
           <h3 className="text-xl font-semibold">Stay in the loop</h3>
           <p className="text-white/70 mt-2">Get product updates, new filters, and special offers — once a month.</p>
           <NewsletterForm />
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="container py-12">
+        <ScrollReveal>
+          <h2 className="text-2xl font-semibold mb-6 text-center">How it works</h2>
+        </ScrollReveal>
+        <div className="grid md:grid-cols-3 gap-4">
+          <ScrollReveal delay={0.02}>
+            <div className="card text-center">
+              <div className="text-3xl">🔌</div>
+              <h4 className="font-semibold mt-3">Invite the bot</h4>
+              <p className="text-white/70 mt-2">Add Swelly to your server with a single click and grant required permissions.</p>
+            </div>
+          </ScrollReveal>
+          <ScrollReveal delay={0.04}>
+            <div className="card text-center">
+              <div className="text-3xl">🎶</div>
+              <h4 className="font-semibold mt-3">Play music</h4>
+              <p className="text-white/70 mt-2">Use simple commands or the dashboard to queue tracks from Spotify, YouTube and more.</p>
+            </div>
+          </ScrollReveal>
+          <ScrollReveal delay={0.06}>
+            <div className="card text-center">
+              <div className="text-3xl">⚙️</div>
+              <h4 className="font-semibold mt-3">Customize</h4>
+              <p className="text-white/70 mt-2">Enable filters, set defaults, and personalize playback for your community.</p>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Quick pricing preview */}
+      <section className="container py-12">
+        <ScrollReveal>
+          <h2 className="text-2xl font-semibold mb-6 text-center">Premium at a glance</h2>
+        </ScrollReveal>
+        <div className="max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6">
+            <div />
+            <div>
+              <PricingCard
+                name="Premium"
+                price="$4.99/mo"
+                features={["High-quality audio", "All audio filters", "24/7 mode", "Global volume"]}
+                highlight
+                cta="Buy Premium"
+                href="/premium"
+              />
+            </div>
+            <div />
+          </div>
         </div>
       </section>
 

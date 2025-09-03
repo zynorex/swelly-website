@@ -2,6 +2,7 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useLocalStorage } from "@/lib/useLocalStorage";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export const dynamic = 'force-dynamic';
 
@@ -103,6 +104,7 @@ function StatusPageInner() {
         // Clear any pending timers and flashes
         timersRef.current.forEach((id) => clearTimeout(id));
         timersRef.current = [];
+                <LoadingSpinner />
         setFlashIds(new Set());
         // Progressively update each shard with a random delay + glow
         for (const s of j.shards) {
@@ -260,7 +262,7 @@ function StatusPageInner() {
           <div className="space-y-3">
             <div className="text-xl font-semibold">Swelly&rsquo;s Status</div>
       {!data && !displayShards ? (
-              <div className="card">Loading…</div>
+              <div className="card"><div className="flex justify-center"><LoadingSpinner /></div></div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 xl:grid-cols-12 gap-3">
                 {sortedFilteredShards.map((s) => (
@@ -363,7 +365,7 @@ function StatusPageInner() {
 
 export default function StatusPage() {
   return (
-    <Suspense fallback={<div className="container py-12"><div className="card">Loading…</div></div>}>
+  <Suspense fallback={<div className="container py-12"><div className="card"><div className="flex justify-center"><LoadingSpinner /></div></div></div>}>
       <StatusPageInner />
     </Suspense>
   );

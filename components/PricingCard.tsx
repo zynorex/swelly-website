@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 type Props = {
   name: string;
@@ -6,9 +7,10 @@ type Props = {
   features: string[];
   highlight?: boolean;
   cta?: string;
+  href?: string;
 };
 
-export default function PricingCard({ name, price, features, highlight, cta = "Buy" }: Props) {
+export default function PricingCard({ name, price, features, highlight, cta = "Buy", href }: Props) {
   return (
     <div className="relative">
       {highlight && (
@@ -22,7 +24,11 @@ export default function PricingCard({ name, price, features, highlight, cta = "B
             <li key={f}>• {f}</li>
           ))}
         </ul>
-        <button className={`btn w-full mt-6 ${highlight ? "btn-primary" : "btn-outline"}`}>{cta}</button>
+        {href ? (
+          <Link href={href} className={`btn w-full mt-6 ${highlight ? "btn-primary" : "btn-outline"}`}>{cta}</Link>
+        ) : (
+          <button className={`btn w-full mt-6 ${highlight ? "btn-primary" : "btn-outline"}`}>{cta}</button>
+        )}
       </div>
     </div>
   );

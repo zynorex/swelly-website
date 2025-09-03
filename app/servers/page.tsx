@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import LoginInline from "@/components/auth/LoginInline";
 
 type Guild = {
@@ -29,7 +30,13 @@ export default function ServersPage() {
   }, [status]);
 
   if (status === "loading") {
-    return <div className="container py-12">Loading…</div>;
+    return (
+      <div className="container py-12">
+        <div className="flex justify-center">
+          <LoadingSpinner />
+        </div>
+      </div>
+    );
   }
 
   if (status !== "authenticated") {
@@ -50,7 +57,7 @@ export default function ServersPage() {
       </div>
       {error && <div className="card border-red-600/40 text-red-300 mb-4">{error}</div>}
       {!guilds ? (
-        <div>Loading your servers…</div>
+  <div className="flex justify-center"><LoadingSpinner /></div>
       ) : guilds.length === 0 ? (
         <div className="text-white/70">No servers found.</div>
       ) : (
