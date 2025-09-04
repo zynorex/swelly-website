@@ -151,7 +151,7 @@ export default function Navbar() {
                 </Link>
               ))}
               <div className="pt-2">
-                <AuthButton />
+                <AuthButton onNavigate={() => setMobileOpen(false)} />
               </div>
             </div>
           </div>

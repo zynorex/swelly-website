@@ -6,9 +6,35 @@ import ParallaxOrbs from "@/components/motion/ParallaxOrbs";
 import ScrollReveal from "@/components/motion/ScrollReveal";
 // ...existing imports...
 import CountUp from "@/components/CountUp";
+import HomeStats from "@/components/HomeStats";
 import NewsletterForm from "@/components/NewsletterForm";
 
-export default function Home() {
+export default async function Home() {
+  // Fetch bot status (shard/totals) from our internal API route.
+  // Use an absolute URL (NEXT_PUBLIC_SITE_URL) to avoid origin issues during dev.
+  const siteOrigin = process.env.NEXT_PUBLIC_SITE_URL || `http://localhost:${process.env.PORT || 3000}`;
+  let totals: { guilds: number; users: number } | null = null;
+  try {
+    const url = new URL('/api/status', siteOrigin).toString();
+    const res = await fetch(url, { next: { revalidate: 10 } });
+    if (!res.ok) {
+      // Surface helpful log server-side so devs can inspect terminal output
+      // (Next.js server logs will show this when rendering the page)
+      // eslint-disable-next-line no-console
+      console.error(`[home] /api/status returned ${res.status}`);
+    } else {
+      const json = await res.json();
+      const guilds = json?.totals?.guilds ?? json?.guilds ?? json?.guildsTotal ?? null;
+      const users = json?.totals?.users ?? json?.users ?? json?.usersTotal ?? null;
+      if (typeof guilds === 'number' || typeof users === 'number') {
+        totals = { guilds: typeof guilds === 'number' ? guilds : 0, users: typeof users === 'number' ? users : 0 };
+      }
+    }
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('[home] Failed to fetch /api/status', err);
+  }
+
   return (
     <div>
       {/* Hero */}
@@ -160,21 +186,17 @@ export default function Home() {
         </ScrollReveal>
         <div className="grid gap-4 sm:grid-cols-3">
           <ScrollReveal>
-            <div className="card text-center">
-            <div className="text-3xl font-bold text-primary"><CountUp to={12340} /></div>
-            <div className="text-white/70 mt-1">Servers</div>
+            <div className="sm:col-span-1">
+              <HomeStats />
             </div>
           </ScrollReveal>
           <ScrollReveal delay={0.05}>
-            <div className="card text-center">
-            <div className="text-3xl font-bold text-primary"><CountUp to={1005221} /></div>
-            <div className="text-white/70 mt-1">Users</div>
-            </div>
+            <div className="hidden sm:block" />
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
             <div className="card text-center">
-            <div className="text-3xl font-bold text-primary">120+</div>
-            <div className="text-white/70 mt-1">Commands</div>
+              <div className="text-3xl font-bold text-primary">120+</div>
+              <div className="text-white/70 mt-1">Commands</div>
             </div>
           </ScrollReveal>
         </div>
