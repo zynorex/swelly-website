@@ -4,7 +4,7 @@ import LoginInline from "@/components/auth/LoginInline";
 import FadeIn from "@/components/motion/FadeIn";
 import ParallaxOrbs from "@/components/motion/ParallaxOrbs";
 import ScrollReveal from "@/components/motion/ScrollReveal";
-import PricingCard from "@/components/PricingCard";
+// ...existing imports...
 import CountUp from "@/components/CountUp";
 import NewsletterForm from "@/components/NewsletterForm";
 
@@ -79,26 +79,55 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Quick pricing preview */}
+      {/* Integrations */}
       <section className="container py-12">
         <ScrollReveal>
-          <h2 className="text-2xl font-semibold mb-6 text-center">Premium at a glance</h2>
+          <h2 className="text-2xl font-semibold mb-6 text-center">Integrations</h2>
         </ScrollReveal>
-        <div className="max-w-4xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-6">
-            <div />
-            <div>
-              <PricingCard
-                name="Premium"
-                price="$4.99/mo"
-                features={["High-quality audio", "All audio filters", "24/7 mode", "Global volume"]}
-                highlight
-                cta="Buy Premium"
-                href="/premium"
-              />
+        <div className="grid md:grid-cols-4 gap-4">
+          {[
+            { t: 'Spotify', d: 'Seamless playback from playlists and tracks.' },
+            { t: 'YouTube', d: 'Search and queue videos with ease.' },
+            { t: 'Apple Music', d: 'High quality streaming support.' },
+            { t: 'SoundCloud', d: 'Community uploads and more.' },
+          ].map((i) => (
+            <ScrollReveal key={i.t}>
+              <div className="card text-center">
+                <div className="text-xl font-bold mb-2">{i.t}</div>
+                <div className="text-white/70 text-sm">{i.d}</div>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+      </section>
+
+      {/* Getting started */}
+      <section className="container py-12">
+        <ScrollReveal>
+          <h2 className="text-2xl font-semibold mb-6 text-center">Getting started</h2>
+        </ScrollReveal>
+        <div className="grid md:grid-cols-3 gap-4">
+          <ScrollReveal>
+            <div className="card text-center">
+              <div className="text-3xl">1</div>
+              <h4 className="font-semibold mt-3">Invite Swelly</h4>
+              <p className="text-white/70 mt-2">Add the bot to your server via the invite link and grant recommended permissions.</p>
             </div>
-            <div />
-          </div>
+          </ScrollReveal>
+          <ScrollReveal delay={0.04}>
+            <div className="card text-center">
+              <div className="text-3xl">2</div>
+              <h4 className="font-semibold mt-3">Configure</h4>
+              <p className="text-white/70 mt-2">Use the dashboard to set defaults, enable filters, and customize the bot.</p>
+            </div>
+          </ScrollReveal>
+          <ScrollReveal delay={0.08}>
+            <div className="card text-center">
+              <div className="text-3xl">3</div>
+              <h4 className="font-semibold mt-3">Play music</h4>
+              <p className="text-white/70 mt-2">Use simple commands or the UI to queue songs and enjoy high-quality playback.</p>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 

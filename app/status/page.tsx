@@ -29,6 +29,7 @@ function StatusPageInner() {
   const prevRef = useRef<Status | null>(null);
   const [flashIds, setFlashIds] = useState<Set<number>>(new Set());
   const timersRef = useRef<number[]>([]);
+  const refreshTimerRef = useRef<number | null>(null);
   const [displayShards, setDisplayShards] = useState<Shard[] | null>(null);
   const displayRef = useRef<Shard[] | null>(null);
   useEffect(() => { displayRef.current = displayShards; }, [displayShards]);
@@ -82,7 +83,7 @@ function StatusPageInner() {
   }, [filter, sortBy, cbSafe, autoRefresh, pathname, router, searchParams]);
 
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | null = null;
+    let timer: number | null = null;
     const load = async () => {
       try {
         const r = await fetch("/api/status", { cache: "no-store" });
@@ -101,13 +102,12 @@ function StatusPageInner() {
         }
         totalsLatencyHistory.current.push(j.latencyMs); if (totalsLatencyHistory.current.length > 20) totalsLatencyHistory.current.shift();
         if (j.totals?.ramMB != null) { totalsRamHistory.current.push(j.totals.ramMB); if (totalsRamHistory.current.length > 20) totalsRamHistory.current.shift(); }
-        // Clear any pending timers and flashes
-        timersRef.current.forEach((id) => clearTimeout(id));
-        timersRef.current = [];
-                <LoadingSpinner />
+  // Clear any pending timers and flashes
+  timersRef.current.forEach((id) => clearTimeout(id));
+  timersRef.current = [];
         setFlashIds(new Set());
         // Progressively update each shard with a random delay + glow
-        for (const s of j.shards) {
+  for (const s of j.shards) {
           const delay = Math.floor(Math.random() * 1400); // 0–1.4s
           const updateTimer = window.setTimeout(() => {
             // apply new shard data to display state
@@ -133,16 +133,35 @@ function StatusPageInner() {
         }
       } finally {
         const jitter = Math.floor(Math.random() * 800); // small jitter so cycles don't align perfectly
-        if (autoRefresh) timer = setTimeout(load, 5_000 + jitter); // ~5s
+  if (autoRefresh) timer = window.setTimeout(load, 5_000 + jitter); // ~5s
+  refreshTimerRef.current = timer;
       }
     };
     load();
     return () => {
-      if (timer) clearTimeout(timer);
+      if (timer) window.clearTimeout(timer);
+      refreshTimerRef.current = null;
       timersRef.current.forEach((id) => clearTimeout(id));
       timersRef.current = [];
     };
   }, [autoRefresh]);
+
+  // toggle handler that also clears any active timers immediately when pausing
+  const toggleAutoRefresh = () => {
+    setAutoRefresh((v) => {
+      const nv = !v;
+      if (!nv) {
+        // paused: clear pending shard timers and the refresh timer
+        timersRef.current.forEach((id) => clearTimeout(id));
+        timersRef.current = [];
+        if (refreshTimerRef.current) {
+          clearTimeout(refreshTimerRef.current);
+          refreshTimerRef.current = null;
+        }
+      }
+      return nv;
+    });
+  };
 
   // When auto-refresh is toggled back on, trigger an immediate fetch
   useEffect(() => {
@@ -226,19 +245,37 @@ function StatusPageInner() {
       <div className="text-center mb-8">
         <h1 className="text-3xl font-extrabold tracking-wider leading-tight md:leading-snug" style={{ fontFamily: 'var(--font-display)' }}>STATUS</h1>
         <p className="text-white/70 mt-2 leading-relaxed">Here you can find all the shards of Swelly and their status.</p>
-        <p className="text-white/40 text-xs mt-1 leading-relaxed" aria-live="polite">Last update: {lastUpdatedText} • Auto-refresh {autoRefresh ? "on" : "off"}</p>
+        <p className="text-white/60 text-xs mt-1 leading-relaxed flex items-center gap-2" aria-live="polite">
+          <span className="inline-flex items-center gap-2">
+            <span className={`h-2 w-2 rounded-full ${autoRefresh ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'}`} />
+            <span>Last update: {lastUpdatedText}</span>
+          </span>
+          <span className="text-white/60">•</span>
+          <span className="text-white/60">Auto-refresh</span>
+          <span className={`ml-1 text-xs font-medium ${autoRefresh ? 'text-emerald-300' : 'text-rose-300'}`}>{autoRefresh ? 'on' : 'paused'}</span>
+          {!autoRefresh && (
+            <span className="ml-3 inline-flex items-center gap-2 px-2 py-1 rounded-md bg-rose-600 text-white text-xs">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M6 4h4v16H6zM14 4h4v16h-4z" />
+              </svg>
+              Paused
+            </span>
+          )}
+        </p>
   {/* Advanced mode removed (no toggle) */}
         <div className="mt-3 flex flex-wrap gap-2 items-center justify-center">
           <button
-            onClick={() => setAutoRefresh(v => !v)}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-white/10 bg-white/5 hover:bg-white/10 text-xs"
+            onClick={toggleAutoRefresh}
+            className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md border text-xs ${autoRefresh ? 'border-white/10 bg-white/5 hover:bg-white/10 text-white' : 'border-rose-400 bg-rose-600 text-white hover:opacity-95'}`}
             aria-pressed={autoRefresh}
             title="Pause/resume auto-refresh"
-          >{autoRefresh ? "Pause" : "Resume"}</button>
+          >
+            {autoRefresh ? 'Pause' : 'Resume'}
+          </button>
           <div className="inline-flex items-center gap-1 text-xs">
             <span className="text-white/50">Filter:</span>
-            <button onClick={() => setFilter("all")} className={`px-2 py-1 rounded border text-xs ${filter === 'all' ? 'border-white/30 bg-white/10' : 'border-white/10 hover:border-white/20'}`}>All</button>
-            <button onClick={() => setFilter("issues")} className={`px-2 py-1 rounded border text-xs ${filter === 'issues' ? 'border-white/30 bg-white/10' : 'border-white/10 hover:border-white/20'}`}>Issues</button>
+            <button onClick={() => setFilter("all")} className={`px-2 py-1 rounded border text-xs ${filter === 'all' ? 'border-white/30 bg-white/10 text-white' : 'border-white/10 hover:border-white/20 text-white/80'}`}>All</button>
+            <button onClick={() => setFilter("issues")} className={`px-2 py-1 rounded border text-xs ${filter === 'issues' ? 'border-white/30 bg-white/10 text-white' : 'border-white/10 hover:border-white/20 text-white/80'}`}>Issues</button>
           </div>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-4 text-sm">
