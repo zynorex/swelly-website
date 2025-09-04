@@ -4,6 +4,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import AuthButton from "./auth/AuthButton";
+import Sparkles from './Sparkles';
 
 const links = [
   { href: "/", label: "Home" },
@@ -37,6 +38,16 @@ export default function Navbar() {
       if (rafId.current) cancelAnimationFrame(rafId.current);
       window.removeEventListener("scroll", onScroll);
     };
+  }, []);
+
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, []);
 
   return (
@@ -76,12 +87,74 @@ export default function Navbar() {
                 pathname === l.href ? "text-white" : "text-white/70"
               } after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full`}
             >
-              {l.label}
+              {l.href === '/premium' ? (
+                <span className="relative inline-flex items-center">
+                  <span className="text-yellow-300 font-medium">{l.label}</span>
+                  <span className="absolute -top-1 -right-4 pointer-events-none">
+                    {/* <Sparkles size={12} color="#F5D06E" /> */}
+                  </span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-2">{l.label}</span>
+              )}
             </Link>
           ))}
         </nav>
         <div className={`flex items-center transition-all duration-300 ${scrolled ? "gap-2" : "gap-3"}`}>
-          <AuthButton />
+          <div className="md:hidden">
+            <button
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileOpen}
+              onClick={() => setMobileOpen((s) => !s)}
+              className="inline-flex items-center justify-center p-2 rounded-md text-white/80 hover:bg-white/5"
+            >
+              <svg className={`w-5 h-5 transition-transform ${mobileOpen ? 'rotate-90' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d={mobileOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'} />
+              </svg>
+            </button>
+          </div>
+          <div className="hidden md:block">
+            <AuthButton />
+          </div>
+        </div>
+      </div>
+      {/* Mobile menu panel */}
+      <div
+        className={`md:hidden fixed inset-0 z-50 transition-opacity ${mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        aria-hidden={!mobileOpen}
+      >
+        <div className={`absolute inset-0 bg-black/50 backdrop-blur-sm`} onClick={() => setMobileOpen(false)} />
+        <div className={`absolute top-0 left-0 right-0 bg-black/80 backdrop-blur-lg border-b border-white/10 transform transition-transform ${mobileOpen ? 'translate-y-0' : '-translate-y-full'}`} role="dialog" aria-modal="true">
+          <div className="container py-4 text-white">
+            <div className="flex items-center justify-between">
+              <Link href="/" className="flex items-center gap-2 font-semibold">
+                <Image src="/text.png" alt="Swelly" width={100} height={28} />
+              </Link>
+              <button aria-label="Close menu" onClick={() => setMobileOpen(false)} className="p-2 rounded-md text-white/70 hover:bg-white/5">
+                ✕
+              </button>
+            </div>
+
+            <div className="mt-4 flex flex-col gap-3">
+              {links.map((l) => (
+                <Link key={l.href} href={l.href} onClick={() => setMobileOpen(false)} className="block px-3 py-3 rounded-md text-white/90 bg-transparent hover:bg-white/5">
+                  {l.href === '/premium' ? (
+                    <span className="relative inline-flex items-center">
+                      <span className="text-yellow-300 font-medium">{l.label}</span>
+                      <span className="absolute -top-1 -right-3 pointer-events-none">
+                        <Sparkles size={12} color="#F5D06E" />
+                      </span>
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-2">{l.label}</span>
+                  )}
+                </Link>
+              ))}
+              <div className="pt-2">
+                <AuthButton />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       {/* Scroll progress bar */}

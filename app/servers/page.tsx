@@ -51,9 +51,27 @@ export default function ServersPage() {
 
   return (
     <div className="container py-12">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">My Servers</h1>
-        <div className="text-white/60 text-sm">Logged in as {session.user?.name}</div>
+      <div className="relative mb-8">
+  <div className="rounded-xl overflow-hidden bg-white/4 backdrop-blur-md p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="min-w-0">
+            <h1 className="text-3xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300">My Servers</h1>
+            <p className="mt-2 text-white/70">Manage and configure the servers you own or help run.</p>
+          </div>
+
+          <div className="flex items-center gap-4 mt-4 sm:mt-0 w-full sm:w-auto justify-end">
+            <div className="text-sm text-white/70 mr-2 hidden sm:block">Logged in as</div>
+            <div className="inline-flex items-center gap-3 bg-white/5 p-2 rounded-md border border-white/6 flex-shrink-0">
+              {session.user?.image ? (
+                <Image src={session.user.image} alt={session.user.name ?? 'avatar'} width={36} height={36} className="rounded-full" />
+              ) : (
+                <div className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center text-sm">{(session.user?.name ?? 'E')[0]}</div>
+              )}
+              <div className="text-sm font-medium max-w-[9rem] truncate">{session.user?.name ?? 'edithdb'}</div>
+            </div>
+          </div>
+        </div>
+
+        <Image src="/swellyG1.png" alt="decor" width={220} height={120} className="pointer-events-none absolute right-6 top-1/2 -translate-y-1/2 opacity-10 fill-none hidden md:block" />
       </div>
       {error && <div className="card border-red-600/40 text-red-300 mb-4">{error}</div>}
       {!guilds ? (

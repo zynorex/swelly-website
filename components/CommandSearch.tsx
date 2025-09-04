@@ -1,5 +1,6 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { FaSearch, FaTimes } from 'react-icons/fa';
 
 export type Command = {
   name: string;
@@ -33,24 +34,45 @@ export default function CommandSearch({ commands }: { commands: Command[] }) {
     return { cats, map };
   }, [filtered]);
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <input
-          className="w-full sm:flex-1 bg-[#0f0f0f] border border-white/10 rounded-md px-3 py-2 outline-none focus:border-primary"
-          placeholder="Search commands..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
+        <label htmlFor="cmd-search" className="sr-only">Search commands</label>
+        <div className="w-full sm:flex-1 relative">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/60 pointer-events-none"><FaSearch /></div>
+          <input
+            id="cmd-search"
+            ref={inputRef}
+            className="w-full bg-white/5 backdrop-blur-sm border border-white/6 rounded-md px-10 py-2 outline-none text-sm text-white transition focus:ring-2 focus:ring-primary focus:border-transparent"
+            placeholder="Search commands..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            aria-label="Search commands"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => { setQuery(''); inputRef.current?.focus(); }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white/90 focus:outline-none"
+              aria-label="Clear search"
+            >
+              <FaTimes />
+            </button>
+          )}
+        </div>
+
+        <label htmlFor="cmd-category" className="sr-only">Filter category</label>
         <select
-          className="sm:w-48 bg-[#0f0f0f] border border-white/10 rounded-md px-3 py-2"
+          id="cmd-category"
+          className="sm:w-48 bg-white/5 backdrop-blur-sm border border-white/6 rounded-md px-3 py-2 text-sm text-white transition focus:ring-2 focus:ring-primary focus:border-transparent"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
+          aria-label="Filter by category"
         >
           {categories.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
+            <option key={c} value={c} className="text-black bg-white">{c}</option>
           ))}
         </select>
       </div>
