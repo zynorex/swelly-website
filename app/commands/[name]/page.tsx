@@ -28,7 +28,7 @@ export default function CommandDetailPage({ params }: Props) {
   }
   return (
     <>
-      <PageHeader title={`/${cmd.name}`} subtitle={cmd.description} right={<span className="text-xs px-2 py-1 rounded bg-white/10 text-white/70">{cmd.category}</span>} />
+  <PageHeader title={cmd.name} subtitle={cmd.description} backHref="/commands" />
       <div className="container py-10 grid gap-6 md:grid-cols-[1fr_320px]">
         <div className="card">
           <h2 className="font-semibold mb-2">Usage</h2>
