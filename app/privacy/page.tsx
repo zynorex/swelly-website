@@ -1,7 +1,7 @@
 export const dynamic = 'force-static';
 
 export const metadata = {
-  title: "Privacy Policy | Swelly",
+  title: "Privacy Policy",
 };
 
 export default function PrivacyPage() {

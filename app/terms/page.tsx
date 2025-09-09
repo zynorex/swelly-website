@@ -1,7 +1,7 @@
 export const dynamic = 'force-static';
 
 export const metadata = {
-  title: "Terms of Service | Swelly",
+  title: "Terms of Service",
 };
 
 

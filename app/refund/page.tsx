@@ -1,7 +1,7 @@
 export const dynamic = 'force-static';
 
 export const metadata = {
-  title: "Refund Policy | Swelly",
+  title: "Refund Policy",
 };
 
 export default function RefundPage() {
