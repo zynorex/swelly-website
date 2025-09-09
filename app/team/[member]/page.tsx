@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import PageHeader from "@/components/layout/PageHeader";
 import { findMemberBySlug } from "../data";
+import DiscordAvatar from "@/components/DiscordAvatar";
 
 function modFromString(numStr: string, m: number) {
   let r = 0;
@@ -48,7 +49,11 @@ export default function MemberPage({ params }: Props) {
         <div className="card p-6 max-w-3xl mx-auto">
           <div className="flex items-center gap-6">
             <div className="w-28 h-28 rounded-full overflow-hidden">
-              <Image src={getAvatarUrl(member)} alt={member.name} width={112} height={112} className="object-cover" />
+              {member.discordId ? (
+                <DiscordAvatar id={member.discordId} alt={member.name} size={112} className="object-cover" fallbackSrc={member.image} avatarHashHint={member.discordAvatar ?? null} />
+              ) : (
+                <Image src={member.image} alt={member.name} width={112} height={112} className="object-cover" />
+              )}
             </div>
             <div>
               <h2 className="text-xl font-semibold">{member.name}</h2>
