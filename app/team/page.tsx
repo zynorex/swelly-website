@@ -3,6 +3,7 @@ import Link from "next/link";
 import PageHeader from "@/components/layout/PageHeader";
 import ScrollReveal from "@/components/motion/ScrollReveal";
 import { TEAM, slugify } from "./data";
+import DiscordAvatar from "@/components/DiscordAvatar";
 
 function modFromString(numStr: string, m: number) {
   let r = 0;
@@ -49,7 +50,11 @@ export default function TeamPage() {
               <Link href={`/team/${m.slug}`} className="block">
                 <div className="card flex flex-col items-center text-center p-6">
                 <div className="w-28 h-28 rounded-full overflow-hidden mb-4">
-                  <Image src={getAvatarUrl(m)} alt={m.name} width={112} height={112} className="object-cover" />
+                  {m.discordId ? (
+                    <DiscordAvatar id={m.discordId} alt={m.name} size={112} className="object-cover" fallbackSrc={m.image} avatarHashHint={m.discordAvatar ?? null} />
+                  ) : (
+                    <Image src={m.image} alt={m.name} width={112} height={112} className="object-cover" />
+                  )}
                 </div>
                 <h3 className="font-semibold text-lg">{m.name}</h3>
                 <div className="flex items-center gap-2 text-sm mb-3">

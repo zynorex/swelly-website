@@ -21,15 +21,15 @@ export const TEAM: Member[] = [
     about:
       "Ayush leads product and engineering for Swelly — focusing on low-latency audio, robust scaling, and delightful UX. He previously worked on media-heavy platforms and enjoys optimizing for reliability.",
     socials: [
-      { label: "Website", url: "https://ayush.dev" },
+      { label: "Website", url: "https://meayush.xyz" },
       { label: "GitHub", url: "https://github.com/ayushedith" },
-      { label: "Twitter", url: "https://twitter.com/ayush" },
+      { label: "Twitter", url: "https://twitter.com/ayushedith" },
     ],
     image: "/swelly1.png",
     slug: "ayush-edith",
-    // example Discord identity (dummy)
-    discordId: "581525444424368131",
-    discordAvatar: "a_9f8e7d6c5b4a3e2f1d0c",
+  // Discord identity (static avatar hash; replace with real if needed)
+  discordId: "581525444424368131",
+  discordAvatar: "b5b9c5ff013d0247144930cfac1297b9",
   },
   {
     name: "Rin Park",
@@ -44,7 +44,7 @@ export const TEAM: Member[] = [
     image: "/swellyG1.png",
     slug: "rin-park",
     // example Discord id (dummy)
-    discordId: "234567890123456789",
+    discordId: "641258822714785822",
     discordAvatar: null,
   },
   {
@@ -59,8 +59,8 @@ export const TEAM: Member[] = [
     ],
     image: "/swellyG2.png",
     slug: "mia-santos",
-    discordId: "345678901234567890",
-    discordAvatar: "7c6b5a4d3e2f1a0b9c8d",
+    discordId: "742984554729570415",
+    discordAvatar: null,
   },
   {
     name: "Alex Chen",
@@ -74,7 +74,7 @@ export const TEAM: Member[] = [
     ],
     image: "/mascot.png",
     slug: "alex-chen",
-    discordId: "456789012345678901",
+    discordId: "1074336035783331841",
     discordAvatar: null,
   },
 ];
