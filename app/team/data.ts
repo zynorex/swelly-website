@@ -17,11 +17,25 @@ export type Member = {
 
 export const TEAM: Member[] = [
   {
-    name: "Ayush Edith",
-    role: "Founder & Lead",
-    bio: "Building fast, reliable music experiences for communities.",
+    name: "Ashis",
+    role: "Developer",
+    bio: "Full‑stack developer shipping features and performance improvements across the bot and website.",
     about:
-      "Ayush leads product and engineering for Swelly — focusing on low-latency audio, robust scaling, and delightful UX. He previously worked on media-heavy platforms and enjoys optimizing for reliability.",
+      "Ashis focuses on core features, stability, and developer experience. Loves clean code, fast builds, and smooth UX for both users and contributors.",
+    socials: [
+      { label: "Instagram", url: "https://instagram.com/ashis" },
+      { label: "Discord", url: "https://discord.gg/swelly" },
+      { label: "Portfolio", url: "https://ashis.dev" },
+    ],
+    image: "/swellyG1.png",
+    slug: "ashis",
+  },
+  {
+    name: "Ayush Edith",
+    role: "Owner & Website Manager",
+    bio: "Building fast, reliable music experiences for communities and maintaining the Swelly website.",
+    about:
+      "Ayush leads product and web experience for Swelly — focusing on low‑latency audio, robust scaling, and delightful UI. Previously worked on media platforms and enjoys optimizing for reliability.",
     socials: [
       { label: "Website", url: "https://meayush.xyz" },
       { label: "GitHub", url: "https://github.com/ayushedith" },
@@ -30,55 +44,35 @@ export const TEAM: Member[] = [
     image: "/swelly1.png",
     slug: "ayush-edith",
     bannerImage: "/banners/ayush.jpg",
-  
-  discordId: "581525444424368131",
-  discordAvatar: "b5b9c5ff013d0247144930cfac1297b9",
+    discordId: "581525444424368131",
+    discordAvatar: "b5b9c5ff013d0247144930cfac1297b9",
   },
   {
-    name: "Rin Park",
-    role: "Frontend Engineer",
-    bio: "Designing beautiful UIs and delightful interactions.",
+    name: "Ros",
+    role: "Co-Owner",
+    bio: "Co‑owner focusing on operations, partnerships, and product direction.",
     about:
-      "Rin crafts responsive, accessible interfaces and loves micro-interactions. She enjoys experimenting with motion and bringing pixel-perfect interfaces to life.",
+      "Ros keeps the wheels turning — aligning roadmap, partnerships, and community needs to deliver a reliable music experience.",
     socials: [
-      { label: "Portfolio", url: "https://rin.design" },
-      { label: "GitHub", url: "https://github.com/rinpark" },
-    ],
-    image: "/swellyG1.png",
-    slug: "rin-park",
-    
-    discordId: "641258822714785822",
-    discordAvatar: null,
-  },
-  {
-    name: "Mia Santos",
-    role: "Backend Engineer",
-    bio: "Scaling the bot and keeping playback rock-solid.",
-    about:
-      "Mia designs resilient systems, focusing on observability and performance. She builds infrastructure that keeps the music flowing under load.",
-    socials: [
-      { label: "GitHub", url: "https://github.com/miasantos" },
-      { label: "LinkedIn", url: "https://linkedin.com/in/mia-santos" },
+      { label: "Instagram", url: "https://instagram.com/ros" },
+      { label: "Discord", url: "https://discord.gg/swelly" },
+      { label: "Twitter", url: "https://twitter.com/ros" },
     ],
     image: "/swellyG2.png",
-    slug: "mia-santos",
-    discordId: "742984554729570415",
-    discordAvatar: null,
+    slug: "ros",
   },
   {
-    name: "Alex Chen",
-    role: "Community Manager",
-    bio: "Helping communities get the most out of Swelly.",
+    name: "Aron",
+    role: "Community Moderator",
+    bio: "Moderating the community and helping users get the most out of Swelly.",
     about:
-      "Alex runs community programs, creates guides, and organizes events. He loves helping server owners get the most value from Swelly.",
+      "Aron supports users, enforces guidelines, and surfaces feedback to improve the product. Passionate about helpful docs and friendly support.",
     socials: [
       { label: "Discord", url: "https://discord.gg/swelly" },
-      { label: "Twitter", url: "https://twitter.com/alexchen" },
+      { label: "Instagram", url: "https://instagram.com/aron" },
     ],
     image: "/mascot.png",
-    slug: "alex-chen",
-    discordId: "1074336035783331841",
-    discordAvatar: null,
+    slug: "aron",
   },
 ];
 

@@ -5,9 +5,12 @@ import { findMemberBySlug } from "../data";
 import DiscordAvatar from "@/components/DiscordAvatar";
 
 function bannerClasses(role: string) {
-  if (/Founder|Lead/i.test(role)) return "bg-gradient-to-r from-rose-600/30 via-fuchsia-600/25 to-violet-600/30";
-  if (/Frontend|Backend|Engineer/i.test(role)) return "bg-gradient-to-r from-indigo-600/30 via-sky-600/25 to-cyan-600/30";
-  if (/Community|Manager/i.test(role)) return "bg-gradient-to-r from-emerald-600/30 via-teal-600/25 to-green-600/30";
+  if (/(Founder|Lead|Owner|Co-Owner)/i.test(role))
+    return "bg-gradient-to-r from-rose-600/30 via-fuchsia-600/25 to-violet-600/30";
+  if (/(Frontend|Backend|Engineer|Developer)/i.test(role))
+    return "bg-gradient-to-r from-indigo-600/30 via-sky-600/25 to-cyan-600/30";
+  if (/(Community|Manager|Moderator)/i.test(role))
+    return "bg-gradient-to-r from-emerald-600/30 via-teal-600/25 to-green-600/30";
   return "bg-gradient-to-r from-primary/30 to-accent-violet/30";
 }
 
