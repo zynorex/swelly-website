@@ -19,7 +19,7 @@ export const TEAM: Member[] = [
   {
     name: "Ashis",
     role: "Developer",
-    bio: "Full‑stack developer shipping features and performance improvements across the bot and website.",
+    bio: "Full‑stack developer shipping features and performance improvements across the bot.",
     about:
       "Ashis focuses on core features, stability, and developer experience. Loves clean code, fast builds, and smooth UX for both users and contributors.",
     socials: [
@@ -29,6 +29,8 @@ export const TEAM: Member[] = [
     ],
     image: "/swellyG1.png",
     slug: "ashis",
+    discordId: "742984554729570415",
+    discordAvatar: null,
   },
   {
     name: "Ayush Edith",
@@ -60,6 +62,9 @@ export const TEAM: Member[] = [
     ],
     image: "/swellyG2.png",
     slug: "ros",
+
+    discordId: "641258822714785822",
+    discordAvatar: null,
   },
   {
     name: "Aron",
@@ -73,6 +78,9 @@ export const TEAM: Member[] = [
     ],
     image: "/mascot.png",
     slug: "aron",
+
+    discordId: "1074336035783331841",
+    discordAvatar: null,
   },
 ];
 
