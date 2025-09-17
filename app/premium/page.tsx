@@ -20,7 +20,7 @@ export default function PremiumPage() {
     {
       name: "Plan A",
       subtitle: "Activate premium in 1 server",
-      price: "$3",
+      price: { monthly: "$3", yearly: "$30" },
       features: [
         "24/7 mode",
         "Autoplay mode",
@@ -38,7 +38,7 @@ export default function PremiumPage() {
     {
       name: "Plan B",
       subtitle: "Activate premium in 3 servers",
-      price: "$5.49",
+      price: { monthly: "$5.49", yearly: "$54.90" },
       features: [
         "24/7 mode",
         "Access to 3 premium bots",
@@ -58,7 +58,7 @@ export default function PremiumPage() {
     {
       name: "Plan C",
       subtitle: "Activate premium in 5 servers",
-      price: "$7.59",
+      price: { monthly: "$7.59", yearly: "$75.90" },
       features: ["Includes all benefits of Plan B"],
       cta: "Buy plan C",
       badge: "Multi-server",
@@ -66,7 +66,7 @@ export default function PremiumPage() {
     {
       name: "Plan D",
       subtitle: "Activate premium in 7 servers",
-      price: "$15.99",
+      price: { monthly: "$15.99", yearly: "$159.90" },
       features: ["Includes all benefits of Plan B"],
       cta: "Buy plan D",
       badge: "Best for larger",
