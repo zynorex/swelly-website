@@ -70,7 +70,7 @@ export default function PricingCard({ name, subtitle, price, features, highlight
               {features.map((f) => (
                 <li key={f} className="flex items-start gap-3">
                   <span className={`mt-0.5 inline-flex items-center justify-center rounded-full ${
-                    highlight ? 'bg-primary/25 text-white' : 'bg-white/10 text-primary'
+                    highlight ? 'bg-primary/25 text-white' : 'bg-white/10 text-white/80'
                   } w-5 h-5 shrink-0`} aria-hidden="true">
                     <CheckIcon className="w-3.5 h-3.5" />
                   </span>
@@ -106,7 +106,7 @@ export default function PricingCard({ name, subtitle, price, features, highlight
             {/* Yearly perks */}
             {isTieredPrice && period === 'yearly' && (
               <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px]">
-                <span className="inline-flex items-center rounded-full px-2 py-0.5 bg-primary/20 text-primary ring-1 ring-white/10">10% OFF</span>
+                <span className="inline-flex items-center rounded-full px-2 py-0.5 bg-primary/20 text-white ring-1 ring-white/10">10% OFF</span>
                 <span className="text-white/60">Best value</span>
               </div>
             )}
