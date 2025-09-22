@@ -11,6 +11,7 @@ const baseLinks = [
   { href: "/", label: "Home" },
   { href: "/commands", label: "Commands" },
   { href: "/premium", label: "Premium" },
+  { href: "/donate", label: "Donate" },
   { href: "/team", label: "Team" },
   { href: "/status", label: "Status" },
   { href: "/invite", label: "Invite" },
