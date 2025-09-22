@@ -3,6 +3,14 @@
 import { useState } from "react";
 import { FaSearch, FaSpinner, FaCheckCircle, FaClock, FaExclamationTriangle, FaTimesCircle } from "react-icons/fa";
 
+
+interface TicketResponse {
+  id: string;
+  authorType: 'user' | 'admin';
+  message: string;
+  timestamp: string;
+}
+
 interface TicketStatus {
   ticketId: string;
   subject: string;
@@ -106,7 +114,7 @@ export default function TicketLookup() {
           status: data.ticket.status,
           submittedAt: data.ticket.submittedAt,
           lastUpdated: data.ticket.updatedAt,
-          messages: data.ticket.responses?.map((response: any) => ({
+          messages: data.ticket.responses?.map((response: TicketResponse) => ({
             id: response.id,
             from: response.authorType === 'admin' ? 'support' : 'user',
             message: response.message,
