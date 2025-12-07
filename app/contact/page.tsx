@@ -72,7 +72,7 @@ export default function ContactPage() {
               Contact Us
             </h1>
             <p className="text-lg text-white/70 max-w-2xl mx-auto">
-              Have a question, suggestion, or need help? We're here for you! Choose your preferred 
+              Have a question, suggestion, or need help? We&apos;re here for you! Choose your preferred 
               way to get in touch with the Swelly team.
             </p>
           </ScrollReveal>
