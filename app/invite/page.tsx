@@ -621,32 +621,49 @@ export default function InviteBotsPage() {
             {bots.map((bot, idx) => (
               <ScrollReveal key={bot.botId} delay={idx * 0.1}>
                 <div className="group relative h-full">
+                  {/* Premium highlight glow background */}
+                  {bot.isPremium && (
+                    <div className="absolute -inset-0.5 bg-gradient-to-br from-amber-600/30 via-yellow-500/20 to-orange-600/30 rounded-2xl blur opacity-0 group-hover:opacity-100 transition duration-500 pointer-events-none" />
+                  )}
+                  
                   {/* Glass Morphism Card - Premium has stronger gradient background */}
-                  <div className={`relative rounded-2xl overflow-hidden transition-all duration-300 group-hover:scale-[1.02] group-hover:shadow-2xl ${bot.colorScheme.glass} ring-2 ${bot.colorScheme.ring}`}
-                    style={bot.isPremium ? { background: `linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(${bot.colorScheme.gradient.includes('green') ? '34,197,94' : bot.colorScheme.gradient.includes('yellow') ? '217,119,6' : '59,130,246'},0.08) 100%), ${bot.colorScheme.glass}` } : undefined}>
+                  <div className={`relative rounded-2xl overflow-hidden transition-all duration-300 ${bot.isPremium ? 'group-hover:scale-[1.03] group-hover:shadow-2xl shadow-2xl' : 'group-hover:scale-[1.02] group-hover:shadow-2xl'} ${bot.colorScheme.glass} ring-2 ${bot.isPremium ? `${bot.colorScheme.ring} ring-yellow-400/50` : bot.colorScheme.ring}`}
+                    style={bot.isPremium ? { 
+                      background: `linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(${bot.colorScheme.gradient.includes('green') ? '34,197,94' : bot.colorScheme.gradient.includes('yellow') ? '217,119,6' : '59,130,246'},0.12) 100%), linear-gradient(to bottom, rgba(255,200,0,0.08) 0%, rgba(${bot.colorScheme.gradient.includes('green') ? '34,197,94' : bot.colorScheme.gradient.includes('yellow') ? '217,119,6' : '59,130,246'},0.04) 100%)` 
+                    } : undefined}>
                     
-                    {/* Premium color gradient accent - top border */}
+                    {/* Premium color gradient accent - top border (premium bots get thicker gold border) */}
                     {bot.isPremium && (
+                      <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-yellow-400 via-amber-300 to-orange-400 opacity-80" />
+                    )}
+                    {!bot.isPremium && (
                       <div className={`absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r ${bot.colorScheme.gradient}`} />
                     )}
                     
-                    {/* Gradient border effect */}
-                    <div className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none bg-gradient-to-br ${bot.colorScheme.gradient}`} />
+                    {/* Gradient border effect - enhanced for premium */}
+                    <div className={`absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 pointer-events-none bg-gradient-to-br ${bot.colorScheme.gradient} ${bot.isPremium ? 'group-hover:opacity-50' : 'group-hover:opacity-40'}`} />
                     
-                    {/* Premium shimmer effect */}
+                    {/* Premium sparkle effect - only for premium bots */}
                     {bot.isPremium && (
-                      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" style={{
-                        backgroundSize: '200% 100%',
-                        animation: 'shimmer 3s infinite'
+                      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" style={{
+                        background: 'radial-gradient(circle at 20% 50%, rgba(255,200,0,0.3) 0%, transparent 50%)',
                       }} />
                     )}
                     
                     <div className="relative p-6 md:p-8 h-full flex flex-col">
-                      {/* Badge - Premium animated */}
-                      {bot.badge && (
+                      {/* Premium Crown Badge + Standard Badge */}
+                      {bot.isPremium && (
+                        <div className="absolute top-4 left-4 z-20">
+                          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-yellow-500 to-amber-500 text-black ring-2 ring-yellow-300 backdrop-blur-sm shadow-lg">
+                            <span className="text-sm">👑</span> Premium Bot
+                          </span>
+                        </div>
+                      )}
+                      
+                      {bot.badge && bot.isPremium && (
                         <div className="absolute top-4 right-4 z-20">
-                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-blue-500/80 to-blue-600/80 text-white ring-1 ring-blue-300/50 backdrop-blur-sm">
-                            <span>✓</span> {bot.badge}
+                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-500 text-white ring-1 ring-emerald-300/50 backdrop-blur-sm shadow-md">
+                            <span>✓</span> Verified
                           </span>
                         </div>
                       )}
@@ -679,16 +696,20 @@ export default function InviteBotsPage() {
 
                         <div className={`border-t ${bot.colorScheme.border} mb-5`} />
 
-                        {/* Invite Button */}
+                        {/* Invite Button - Premium gets upgraded styling */}
                         <div className="mt-auto mb-5">
                           {bot.inviteLink !== "#" ? (
                             <a
                               href={bot.inviteLink}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className={`block w-full text-center rounded-lg py-3 font-semibold text-white bg-gradient-to-r ${bot.colorScheme.button} transition-all duration-300 transform group-hover:shadow-xl group-hover:-translate-y-0.5 group-hover:scale-105 active:scale-95 active:translate-y-0.5 ring-1 ring-white/20 shadow-lg`}
+                              className={`block w-full text-center rounded-lg py-3 font-semibold text-white transition-all duration-300 transform ring-1 shadow-lg ${
+                                bot.isPremium
+                                  ? 'bg-gradient-to-r from-yellow-600 to-amber-500 hover:shadow-yellow-500/50 group-hover:shadow-2xl group-hover:-translate-y-1 group-hover:scale-110 active:scale-95 ring-yellow-300/40'
+                                  : `bg-gradient-to-r ${bot.colorScheme.button} group-hover:shadow-xl group-hover:-translate-y-0.5 group-hover:scale-105 active:scale-95 active:translate-y-0.5 ring-white/20`
+                              }`}
                             >
-                              Invite {bot.name}
+                              {bot.isPremium ? '👑 Invite Premium' : `Invite ${bot.name}`}
                             </a>
                           ) : (
                             <button
@@ -709,23 +730,37 @@ export default function InviteBotsPage() {
                           Why these permissions?
                         </button>
 
-                        {/* Bot Stats / Features */}
-                        <div className={`border-t ${bot.colorScheme.border} pt-5`}>
-                          <div className="flex justify-around text-center text-xs">
-                            <div>
-                              <div className={`font-bold bg-gradient-to-r ${bot.colorScheme.accent} bg-clip-text text-transparent`}>Premium</div>
-                              <div className="text-white/60 text-[11px] mt-1">Features</div>
-                            </div>
-                            <div>
-                              <div className={`font-bold bg-gradient-to-r ${bot.colorScheme.accent} bg-clip-text text-transparent`}>24/7</div>
-                              <div className="text-white/60 text-[11px] mt-1">Uptime</div>
-                            </div>
-                            <div>
-                              <div className={`font-bold bg-gradient-to-r ${bot.colorScheme.accent} bg-clip-text text-transparent`}>Support</div>
-                              <div className="text-white/60 text-[11px] mt-1">Included</div>
+                        {/* Bot Stats / Features - Premium gets exclusive features section */}
+                        {bot.isPremium && bot.premiumFeatures && bot.premiumFeatures.length > 0 ? (
+                          <div className={`border-t ${bot.colorScheme.border} pt-5`}>
+                            <h4 className="text-xs uppercase font-bold text-yellow-400 tracking-wider mb-3">✨ Exclusive Features</h4>
+                            <div className="space-y-2">
+                              {bot.premiumFeatures.slice(0, 4).map((feature, idx) => (
+                                <div key={`${feature}-${idx}`} className="flex items-start gap-2 text-xs text-white/80">
+                                  <span className="text-yellow-400 font-bold flex-shrink-0 mt-0.5">✦</span>
+                                  <span>{feature}</span>
+                                </div>
+                              ))}
                             </div>
                           </div>
-                        </div>
+                        ) : (
+                          <div className={`border-t ${bot.colorScheme.border} pt-5`}>
+                            <div className="flex justify-around text-center text-xs">
+                              <div>
+                                <div className={`font-bold bg-gradient-to-r ${bot.colorScheme.accent} bg-clip-text text-transparent`}>Premium</div>
+                                <div className="text-white/60 text-[11px] mt-1">Features</div>
+                              </div>
+                              <div>
+                                <div className={`font-bold bg-gradient-to-r ${bot.colorScheme.accent} bg-clip-text text-transparent`}>24/7</div>
+                                <div className="text-white/60 text-[11px] mt-1">Uptime</div>
+                              </div>
+                              <div>
+                                <div className={`font-bold bg-gradient-to-r ${bot.colorScheme.accent} bg-clip-text text-transparent`}>Support</div>
+                                <div className="text-white/60 text-[11px] mt-1">Included</div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
