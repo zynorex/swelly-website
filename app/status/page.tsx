@@ -1,8 +1,13 @@
 "use client";
+
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useLocalStorage } from "@/lib/useLocalStorage";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import BotStatsCards from "@/components/dashboard/BotStatsCards";
+import UptimeChart from "@/components/dashboard/UptimeChart";
+import Activity24hChart from "@/components/dashboard/Activity24hChart";
+import PopularCommandsChart from "@/components/dashboard/PopularCommandsChart";
 
 export const dynamic = 'force-dynamic';
 
@@ -15,13 +20,16 @@ type Status = {
   shardsCount: number;
   shards: Shard[];
   totals?: { guilds: number; users: number; ramMB: number };
+  dashboard?: {
+    uptimePercent: number;
+    latencyMs: number;
+    commandsExecuted24h: number;
+    topCommands: Array<{ name: string; usage: number; trend: number }>;
+  };
 };
-
-// legend colors are derived dynamically from the selected palette
 
 function StatusPageInner() {
   const [data, setData] = useState<Status | null>(null);
-  // Advanced mode removed; tiles always render in simple style (number only)
   const [autoRefresh, setAutoRefresh] = useLocalStorage<boolean>("status:autoRefresh", true);
   const [filter, setFilter] = useLocalStorage<"all" | "issues">("status:filter", "all");
   const [sortBy, setSortBy] = useLocalStorage<"id" | "status">("status:sort", "id");
@@ -32,11 +40,17 @@ function StatusPageInner() {
   const refreshTimerRef = useRef<number | null>(null);
   const [displayShards, setDisplayShards] = useState<Shard[] | null>(null);
   const displayRef = useRef<Shard[] | null>(null);
+  
   useEffect(() => { displayRef.current = displayShards; }, [displayShards]);
+  
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
-  // tick to refresh "Last update" text
   const [, setClock] = useState(0);
-  useEffect(() => { const i = window.setInterval(() => setClock(c => (c + 1) % 1_000_000), 1000); return () => clearInterval(i); }, []);
+  
+  useEffect(() => { 
+    const i = window.setInterval(() => setClock(c => (c + 1) % 1_000_000), 1000); 
+    return () => clearInterval(i); 
+  }, []);
+  
   const lastUpdatedText = (() => {
     if (!lastUpdated) return "—";
     const diff = Math.max(0, Math.floor((Date.now() - lastUpdated) / 1000));
@@ -45,22 +59,22 @@ function StatusPageInner() {
     return `${m}m ${s}s ago`;
   })();
 
-  // track shard histories for simple sparklines (last 20 points)
   const shardPingHistory = useRef<Map<number, number[]>>(new Map());
   const shardGuildHistory = useRef<Map<number, number[]>>(new Map());
   const totalsRamHistory = useRef<number[]>([]);
   const totalsLatencyHistory = useRef<number[]>([]);
+  
   const pushHistory = (id: number, map: Map<number, number[]>, val: number) => {
     const arr = map.get(id) ?? [];
-    arr.push(val); if (arr.length > 20) arr.shift();
+    arr.push(val); 
+    if (arr.length > 20) arr.shift();
     map.set(id, arr);
   };
 
-  // routing + query param sync (shareable state)
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  // read on mount
+  
   useEffect(() => {
     const f = searchParams.get("filter");
     const s = searchParams.get("sort");
@@ -71,8 +85,8 @@ function StatusPageInner() {
     if (cb === "1" || cb === "0") setCbSafe(cb === "1");
     if (ar === "1" || ar === "0") setAutoRefresh(ar === "1");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  // write on changes (debounced per tick)
+  }, [searchParams]);
+  
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("filter", filter);
@@ -90,35 +104,34 @@ function StatusPageInner() {
         const j: Status = await r.json();
         prevRef.current = j;
         setData(j);
-        // Initialize display on first load
-        if (!displayRef.current) {
-          setDisplayShards(j.shards);
-        }
-  setLastUpdated(Date.now());
-        // update histories
+        if (!displayRef.current) setDisplayShards(j.shards);
+        setLastUpdated(Date.now());
+        
         for (const s of j.shards) {
           pushHistory(s.id, shardPingHistory.current, s.ping);
           pushHistory(s.id, shardGuildHistory.current, s.guilds);
         }
-        totalsLatencyHistory.current.push(j.latencyMs); if (totalsLatencyHistory.current.length > 20) totalsLatencyHistory.current.shift();
-        if (j.totals?.ramMB != null) { totalsRamHistory.current.push(j.totals.ramMB); if (totalsRamHistory.current.length > 20) totalsRamHistory.current.shift(); }
-  // Clear any pending timers and flashes
-  timersRef.current.forEach((id) => clearTimeout(id));
-  timersRef.current = [];
+        totalsLatencyHistory.current.push(j.latencyMs);
+        if (totalsLatencyHistory.current.length > 20) totalsLatencyHistory.current.shift();
+        if (j.totals?.ramMB != null) {
+          totalsRamHistory.current.push(j.totals.ramMB);
+          if (totalsRamHistory.current.length > 20) totalsRamHistory.current.shift();
+        }
+        
+        timersRef.current.forEach((id) => clearTimeout(id));
+        timersRef.current = [];
         setFlashIds(new Set());
-        // Progressively update each shard with a random delay + glow
-  for (const s of j.shards) {
-          const delay = Math.floor(Math.random() * 1400); // 0–1.4s
+        
+        for (const s of j.shards) {
+          const delay = Math.floor(Math.random() * 1400);
           const updateTimer = window.setTimeout(() => {
-            // apply new shard data to display state
             setDisplayShards((prev) => {
               const base = prev ? [...prev] : [];
               const idx = base.findIndex((x) => x.id === s.id);
               if (idx >= 0) base[idx] = s; else base.push(s);
-              base.sort((a,b) => a.id - b.id);
+              base.sort((a, b) => a.id - b.id);
               return base;
             });
-            // trigger glow for this shard
             setFlashIds((prev) => {
               const ns = new Set(prev); ns.add(s.id); return ns;
             });
@@ -132,9 +145,9 @@ function StatusPageInner() {
           timersRef.current.push(updateTimer);
         }
       } finally {
-        const jitter = Math.floor(Math.random() * 800); // small jitter so cycles don't align perfectly
-  if (autoRefresh) timer = window.setTimeout(load, 5_000 + jitter); // ~5s
-  refreshTimerRef.current = timer;
+        const jitter = Math.floor(Math.random() * 800);
+        if (autoRefresh) timer = window.setTimeout(load, 5_000 + jitter);
+        refreshTimerRef.current = timer;
       }
     };
     load();
@@ -146,12 +159,10 @@ function StatusPageInner() {
     };
   }, [autoRefresh]);
 
-  // toggle handler that also clears any active timers immediately when pausing
   const toggleAutoRefresh = () => {
     setAutoRefresh((v) => {
       const nv = !v;
       if (!nv) {
-        // paused: clear pending shard timers and the refresh timer
         timersRef.current.forEach((id) => clearTimeout(id));
         timersRef.current = [];
         if (refreshTimerRef.current) {
@@ -163,10 +174,8 @@ function StatusPageInner() {
     });
   };
 
-  // When auto-refresh is toggled back on, trigger an immediate fetch
   useEffect(() => {
     if (!autoRefresh) return;
-    // fire-and-forget fetch to start the cycle if paused previously
     (async () => {
       try {
         const r = await fetch("/api/status", { cache: "no-store" });
@@ -181,7 +190,6 @@ function StatusPageInner() {
 
   const totals = data?.totals;
 
-  // Color palette mapping with CB-safe option
   const palette = useMemo(() => {
     if (!cbSafe) {
       return {
@@ -190,7 +198,6 @@ function StatusPageInner() {
         outage: { border: 'border-red-500/20', bg: 'bg-red-500/5', text: 'text-red-300', dot: 'bg-red-500' },
       } as const;
     }
-    // Deuteranopia-friendly: blue, amber, magenta
     return {
       operational: { border: 'border-sky-500/20', bg: 'bg-sky-500/5', text: 'text-sky-300', dot: 'bg-sky-500' },
       partial: { border: 'border-amber-500/20', bg: 'bg-amber-500/5', text: 'text-amber-300', dot: 'bg-amber-500' },
@@ -206,16 +213,11 @@ function StatusPageInner() {
 
   const sortedFilteredShards = useMemo(() => {
     const list = (displayShards ?? data?.shards ?? []).filter(s => filter === 'all' ? true : s.status !== 'operational');
-    if (sortBy === 'id') return list.sort((a,b) => a.id - b.id);
-    // issues first: outage > partial > operational, then id
+    if (sortBy === 'id') return list.sort((a, b) => a.id - b.id);
     const rank = (s: Shard) => s.status === 'outage' ? 0 : s.status === 'partial' ? 1 : 2;
-    return list.sort((a,b) => rank(a) - rank(b) || a.id - b.id);
+    return list.sort((a, b) => rank(a) - rank(b) || a.id - b.id);
   }, [displayShards, data, filter, sortBy]);
 
-  // soft auto-scroll to first issue when present in advanced mode
-  // Advanced mode auto-scroll removed
-
-  // inline sparkline component
   function Sparkline({ data, color = '#9ca3af' }: { data: number[]; color?: string }) {
     const width = 120, height = 36, pad = 2;
     const points = useMemo(() => {
@@ -235,34 +237,71 @@ function StatusPageInner() {
     );
   }
 
-  // shard modal
   const [selected, setSelected] = useState<Shard | null>(null);
   const openShard = (s: Shard) => setSelected(s);
   const closeShard = () => setSelected(null);
 
+  const dashboardMetrics = data?.dashboard ? {
+    guilds: totals?.guilds ?? 0,
+    users: totals?.users ?? 0,
+    ramMB: totals?.ramMB ?? 0,
+    shards: data.shardsCount,
+    uptimePercent: data.dashboard.uptimePercent,
+  } : null;
+
   return (
-    <div className="container py-12">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-extrabold tracking-wider leading-tight md:leading-snug" style={{ fontFamily: 'var(--font-display)' }}>STATUS</h1>
-        <p className="text-white/70 mt-2 leading-relaxed">Here you can find all the shards of Swelly and their status.</p>
-        <p className="text-white/60 text-xs mt-1 leading-relaxed flex items-center gap-2" aria-live="polite">
-          <span className="inline-flex items-center gap-2">
-            <span className={`h-2 w-2 rounded-full ${autoRefresh ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'}`} />
-            <span>Last update: {lastUpdatedText}</span>
-          </span>
-          <span className="text-white/60">•</span>
-          <span className="text-white/60">Auto-refresh</span>
-          <span className={`ml-1 text-xs font-medium ${autoRefresh ? 'text-emerald-300' : 'text-rose-300'}`}>{autoRefresh ? 'on' : 'paused'}</span>
-          {!autoRefresh && (
-            <span className="ml-3 inline-flex items-center gap-2 px-2 py-1 rounded-md bg-rose-600 text-white text-xs">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M6 4h4v16H6zM14 4h4v16h-4z" />
-              </svg>
-              Paused
+    <div className="min-h-screen">
+      {dashboardMetrics && (
+        <div className="bg-gradient-to-br from-slate-900 via-purple-900/50 to-slate-900 py-16 border-b border-white/10">
+          <div className="container space-y-12">
+            <div className="text-center">
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-wider mb-3">Bot Statistics Dashboard</h1>
+              <p className="text-white/70 text-lg max-w-2xl mx-auto">Real-time metrics and performance analytics for Swelly</p>
+            </div>
+            <div>
+              <BotStatsCards stats={dashboardMetrics} loading={!data} />
+            </div>
+            <div className="grid lg:grid-cols-2 gap-6">
+              {data?.dashboard && (
+                <>
+                  <UptimeChart uptimePercent={data.dashboard.uptimePercent} loading={!data} />
+                  <Activity24hChart loading={!data} />
+                </>
+              )}
+            </div>
+
+            {data?.dashboard && (
+              <div>
+                <PopularCommandsChart commands={data.dashboard.topCommands} loading={!data} />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <div className="container py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-extrabold tracking-wider leading-tight md:leading-snug" style={{ fontFamily: 'var(--font-display)' }}>SHARD STATUS</h2>
+          <p className="text-white/70 mt-2 leading-relaxed">Detailed view of all Swelly shards and their real-time status.</p>
+          <p className="text-white/60 text-xs mt-1 leading-relaxed flex items-center gap-2" aria-live="polite">
+            <span className="inline-flex items-center gap-2">
+              <span className={`h-2 w-2 rounded-full ${autoRefresh ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'}`} />
+              <span>Last update: {lastUpdatedText}</span>
             </span>
-          )}
-        </p>
-  {/* Advanced mode removed (no toggle) */}
+            <span className="text-white/60">•</span>
+            <span className="text-white/60">Auto-refresh</span>
+            <span className={`ml-1 text-xs font-medium ${autoRefresh ? 'text-emerald-300' : 'text-rose-300'}`}>{autoRefresh ? 'on' : 'paused'}</span>
+            {!autoRefresh && (
+              <span className="ml-3 inline-flex items-center gap-2 px-2 py-1 rounded-md bg-rose-600 text-white text-xs">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M6 4h4v16H6zM14 4h4v16h-4z" />
+                </svg>
+                Paused
+              </span>
+            )}
+          </p>
+        </div>
+
         <div className="mt-3 flex flex-wrap gap-2 items-center justify-center">
           <button
             onClick={toggleAutoRefresh}
@@ -286,90 +325,81 @@ function StatusPageInner() {
             </span>
           ))}
         </div>
-      </div>
 
-      <div className="grid lg:grid-cols-[1fr,280px] gap-6 items-start">
-        {/* Left: incidents + shards grid */}
-        <div className="space-y-6">
-          <div className="card">
-            <div className="font-semibold mb-2">Discord Incidents</div>
-            <div className="text-white/60 text-sm">No current Discord incidents.</div>
+        <div className="grid lg:grid-cols-[1fr,280px] gap-6 items-start mt-8">
+          <div className="space-y-6">
+            <div className="card">
+              <div className="font-semibold mb-2">Discord Incidents</div>
+              <div className="text-white/60 text-sm">No current Discord incidents.</div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="text-xl font-semibold">Swelly&rsquo;s Status</div>
+              {!data && !displayShards ? (
+                <div className="card"><div className="flex justify-center"><LoadingSpinner /></div></div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 xl:grid-cols-12 gap-3">
+                  {sortedFilteredShards.map((s) => (
+                    <div
+                      key={s.id}
+                      className={`rounded-md border p-2 text-center leading-relaxed h-20 overflow-hidden flex flex-col items-center justify-center transition-all cursor-pointer focus:outline-none focus:ring-2 ring-offset-0 ring-white/20 ${
+                        s.status === 'operational' ? `${palette.operational.border} ${palette.operational.bg}` :
+                        s.status === 'partial' ? `${palette.partial.border} ${palette.partial.bg}` :
+                        `${palette.outage.border} ${palette.outage.bg}`
+                      } ${flashIds.has(s.id) ? 'animate-flash-ring shadow-[0_0_0_6px_rgba(147,197,253,0.12)]' : ''}`}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Shard ${s.id}, status ${s.status}, ping ${s.ping} ms`}
+                      onClick={() => openShard(s)}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openShard(s);} }}
+                    >
+                      <div className={`text-xs mb-1 w-full truncate ${s.status === 'operational' ? palette.operational.text : s.status === 'partial' ? palette.partial.text : palette.outage.text}`}>#{s.id}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className="space-y-3">
-            <div className="text-xl font-semibold">Swelly&rsquo;s Status</div>
-      {!data && !displayShards ? (
-              <div className="card"><div className="flex justify-center"><LoadingSpinner /></div></div>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 xl:grid-cols-12 gap-3">
-                {sortedFilteredShards.map((s) => (
-                  <div
-                    key={s.id}
-                    className={`rounded-md border p-2 text-center leading-relaxed h-20 overflow-hidden flex flex-col items-center justify-center transition-all cursor-pointer focus:outline-none focus:ring-2 ring-offset-0 ring-white/20 ${
-                      s.status === 'operational' ? `${palette.operational.border} ${palette.operational.bg}` :
-                      s.status === 'partial' ? `${palette.partial.border} ${palette.partial.bg}` :
-                      `${palette.outage.border} ${palette.outage.bg}`
-                    } ${flashIds.has(s.id) ? 'animate-flash-ring shadow-[0_0_0_6px_rgba(147,197,253,0.12)]' : ''}`}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`Shard ${s.id}, status ${s.status}, ping ${s.ping} ms`}
-                    onClick={() => openShard(s)}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openShard(s);} }}
-                  >
-                    <div className={`text-xs mb-1 w-full truncate ${
-                      s.status === 'operational' ? palette.operational.text :
-                      s.status === 'partial' ? palette.partial.text :
-                      palette.outage.text
-                    }`}>#{s.id}</div>
-                    {/* Advanced details removed; simple mode always on */}
-                  </div>
-                ))}
+          <aside className="card">
+            <div className="space-y-3 text-sm leading-relaxed">
+              <div className="flex items-center justify-between">
+                <span className="text-white/60">Guilds:</span>
+                <span className="text-white">{totals ? totals.guilds.toLocaleString() : '—'}</span>
               </div>
-            )}
-          </div>
+              <div className="flex items-center justify-between">
+                <span className="text-white/60">Users:</span>
+                <span className="text-white">{totals ? totals.users.toLocaleString() : '—'}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-white/60">Ram:</span>
+                <span className="text-white">{totals ? `${totals.ramMB.toLocaleString()}MB` : '—'}</span>
+              </div>
+              <div className="mt-4 space-y-2">
+                <div className="text-white/60 text-xs">Overall ping</div>
+                <Sparkline data={totalsLatencyHistory.current} color="#60a5fa" />
+                <div className="text-white/60 text-xs mt-2">RAM usage</div>
+                <Sparkline data={totalsRamHistory.current} color="#fb7185" />
+              </div>
+            </div>
+          </aside>
         </div>
 
-        {/* Right: quick stats */}
-        <aside className="card">
-          <div className="space-y-3 text-sm leading-relaxed">
-            <div className="flex items-center justify-between">
-              <span className="text-white/60">Guilds:</span>
-              <span className="text-white">{totals ? totals.guilds.toLocaleString() : '—'}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-white/60">Users:</span>
-              <span className="text-white">{totals ? totals.users.toLocaleString() : '—'}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-white/60">Ram:</span>
-              <span className="text-white">{totals ? `${totals.ramMB.toLocaleString()}MB` : '—'}</span>
-            </div>
-            <div className="mt-4 space-y-2">
-              <div className="text-white/60 text-xs">Overall ping</div>
-              <Sparkline data={totalsLatencyHistory.current} color="#60a5fa" />
-              <div className="text-white/60 text-xs mt-2">RAM usage</div>
-              <Sparkline data={totalsRamHistory.current} color="#fb7185" />
-            </div>
+        <div className="mt-6 flex flex-wrap gap-2 items-center justify-center text-xs">
+          <div className="inline-flex items-center gap-1">
+            <span className="text-white/50">Sort:</span>
+            <button onClick={() => setSortBy('id')} className={`px-2 py-1 rounded border ${sortBy === 'id' ? 'border-white/30 bg-white/10' : 'border-white/10 hover:border-white/20'}`}>ID</button>
+            <button onClick={() => setSortBy('status')} className={`px-2 py-1 rounded border ${sortBy === 'status' ? 'border-white/30 bg-white/10' : 'border-white/10 hover:border-white/20'}`}>Issues first</button>
           </div>
-        </aside>
-      </div>
-
-      {/* Controls row below header */}
-      <div className="mt-6 flex flex-wrap gap-2 items-center justify-center text-xs">
-        <div className="inline-flex items-center gap-1">
-          <span className="text-white/50">Sort:</span>
-          <button onClick={() => setSortBy('id')} className={`px-2 py-1 rounded border ${sortBy === 'id' ? 'border-white/30 bg-white/10' : 'border-white/10 hover:border-white/20'}`}>ID</button>
-          <button onClick={() => setSortBy('status')} className={`px-2 py-1 rounded border ${sortBy === 'status' ? 'border-white/30 bg-white/10' : 'border-white/10 hover:border-white/20'}`}>Issues first</button>
-        </div>
-        <div className="inline-flex items-center gap-2">
-          <label className="inline-flex items-center gap-2 cursor-pointer select-none">
-            <input type="checkbox" className="accent-rose-400" checked={cbSafe} onChange={(e) => setCbSafe(e.target.checked)} />
-            <span className="text-white/60">Color‑blind safe</span>
-          </label>
+          <div className="inline-flex items-center gap-2">
+            <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+              <input type="checkbox" className="accent-rose-400" checked={cbSafe} onChange={(e) => setCbSafe(e.target.checked)} />
+              <span className="text-white/60">Color‑blind safe</span>
+            </label>
+          </div>
         </div>
       </div>
 
-      {/* Shard details modal */}
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" role="dialog" aria-modal="true" aria-label={`Details for shard ${selected.id}`} onClick={closeShard}>
           <div className="card max-w-md w-full" onClick={(e) => e.stopPropagation()}>
@@ -402,7 +432,7 @@ function StatusPageInner() {
 
 export default function StatusPage() {
   return (
-  <Suspense fallback={<div className="container py-12"><div className="card"><div className="flex justify-center"><LoadingSpinner /></div></div></div>}>
+    <Suspense fallback={<div className="container py-12"><div className="card"><div className="flex justify-center"><LoadingSpinner /></div></div></div>}>
       <StatusPageInner />
     </Suspense>
   );
