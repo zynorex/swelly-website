@@ -5,6 +5,7 @@ export default function sitemap() {
   const staticRoutes = [
     "",
     "/commands",
+    "/playground",
     "/premium",
     "/premium/compare",
     "/invite",
