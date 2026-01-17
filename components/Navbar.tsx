@@ -11,6 +11,7 @@ import Sparkles from './Sparkles';
 const baseLinks = [
   { href: "/", label: "Home" },
   { href: "/commands", label: "Commands" },
+  { href: "/playground", label: "Playground" },
   { href: "/premium", label: "Premium" },
   { href: "/donate", label: "Donate" },
   { href: "/team", label: "Team" },
