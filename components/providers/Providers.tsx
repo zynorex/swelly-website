@@ -8,7 +8,7 @@ export default function Providers({ children }: { children: ReactNode }) {
   return (
     <SessionProvider>
       {children}
-  <RevealObserver />
+      <RevealObserver />
       <Toaster
         richColors
         position="top-right"
