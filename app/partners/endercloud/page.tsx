@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import ScrollReveal from "@/components/motion/ScrollReveal";
+import PageHeader from "@/components/layout/PageHeader";
 import CopyButton from "@/components/CopyButton";
 import {
   FaBolt,
@@ -70,52 +71,56 @@ const useCases = [
 export default function EndercloudPartnerPage() {
   return (
     <div>
-      <section className="relative overflow-hidden py-20">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-transparent to-accent-violet/15" />
-        <div className="absolute inset-0 bg-grid opacity-[0.12]" />
+      <PageHeader 
+        title="Swelly x Endercloud" 
+        subtitle="Endercloud is a featured partner for builders who want dependable hosting for Discord bots and related projects. This page explains why we recommend checking them out." 
+      />
+
+      <section className="relative overflow-hidden pt-12 pb-14">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent-violet/10" />
 
         <div className="container relative z-10">
           <ScrollReveal>
             <div className="mx-auto max-w-4xl text-center">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/6 px-4 py-2 text-sm text-white/85 backdrop-blur-sm">
-                <FaCheckCircle className="h-4 w-4 text-primary" />
-                Official Partner Spotlight
-              </div>
-
-              <h1 className="text-4xl font-extrabold tracking-tight md:text-6xl">
-                <span className="text-red-500">Swelly</span> x <span className="text-[#2f6dff]">Endercloud</span>
-              </h1>
-
-              <div className="mt-6 flex justify-center">
-                <div className="rounded-2xl border border-white/12 bg-black/25 px-5 py-4 backdrop-blur-sm">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8">
+                <div className="flex h-24 w-24 sm:h-28 sm:w-28 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-5 backdrop-blur-md hover:shadow-glow transition-shadow">
+                  <Image
+                    src="/mascot.png"
+                    alt="Swelly mascot"
+                    width={80}
+                    height={80}
+                    className="object-contain drop-shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+                    priority
+                  />
+                </div>
+                
+                <div className="text-white/30 text-2xl font-bold">
+                  ✕
+                </div>
+                
+                <div className="flex h-24 sm:h-28 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-6 py-4 sm:px-8 sm:py-6 backdrop-blur-md hover:shadow-glow transition-shadow">
                   <Image
                     src="/Endercloud.png"
                     alt="Endercloud logo"
-                    width={260}
-                    height={80}
-                    className="h-12 w-auto object-contain"
+                    width={180}
+                    height={60}
+                    className="h-8 sm:h-10 w-auto object-contain"
                     priority
                   />
                 </div>
               </div>
 
-              <p className="mx-auto mt-5 max-w-3xl text-lg text-white/75 md:text-xl">
-                Endercloud is a featured partner for builders who want dependable hosting for Discord bots and related projects.
-                This page explains why we recommend checking them out.
-              </p>
-
-              <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <a
                   href="https://Endercloud.in/"
                   target="_blank"
                   rel="noreferrer"
-                  className="btn btn-primary inline-flex w-full items-center justify-center gap-2 sm:w-auto relative overflow-hidden group shadow-[0_0_20px_rgba(47,109,255,0.4)] hover:shadow-[0_0_30px_rgba(47,109,255,0.6)] border border-[#2f6dff]/50 bg-[#2f6dff]/20 hover:bg-[#2f6dff]/40 text-white transition-all backdrop-blur-sm"
+                  className="btn btn-primary inline-flex w-full items-center justify-center gap-2 sm:w-auto"
                 >
-                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
                   Visit Endercloud
                   <FaExternalLinkAlt className="h-3.5 w-3.5" />
                 </a>
-                <Link href="/support" className="btn btn-outline w-full sm:w-auto hover:bg-white/5">
+                <Link href="/support" className="btn btn-outline w-full sm:w-auto">
                   Talk to Swelly Support
                 </Link>
               </div>
@@ -125,51 +130,25 @@ export default function EndercloudPartnerPage() {
               </div>
             </div>
           </ScrollReveal>
-          
-          <ScrollReveal delay={0.2}>
-            <div className="mx-auto mt-16 max-w-5xl rounded-3xl overflow-hidden border border-white/10 bg-black/20 shadow-[0_0_50px_-15px_rgba(47,109,255,0.5)] relative group">
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10 pointer-events-none" />
-              <Image
-                src="/partnerImage.png"
-                alt="Swelly x Endercloud Infrastructure"
-                width={1200}
-                height={600}
-                className="w-full h-[300px] sm:h-[450px] object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.03]"
-                priority
-              />
-              <div className="absolute bottom-6 left-6 sm:bottom-10 sm:left-10 z-20 flex flex-col gap-2 pointer-events-none">
-                 <div className="inline-flex items-center gap-2 rounded-full bg-[#2f6dff]/20 backdrop-blur-md px-3 py-1.5 border border-[#2f6dff]/30 text-white text-xs font-semibold uppercase tracking-wider w-fit">
-                    <FaCloud className="text-[#2f6dff]" /> Powering The Future
-                 </div>
-                 <h3 className="text-2xl sm:text-4xl font-bold text-white drop-shadow-xl mt-1 tracking-tight">High-Performance Hosting</h3>
-              </div>
-            </div>
-          </ScrollReveal>
 
-          <ScrollReveal delay={0.3}>
-            <div className="mx-auto mt-12 max-w-4xl relative">
-              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-[#2f6dff] to-primary opacity-30 blur block"></div>
-              <div className="relative rounded-2xl border border-white/10 bg-black/60 p-1 backdrop-blur-xl">
-                <div className="flex flex-col items-center justify-between gap-6 rounded-xl border border-white/5 bg-gradient-to-r from-black/80 to-[#2f6dff]/10 p-6 sm:flex-row sm:p-8">
-                   <div className="text-center sm:text-left flex-1">
-                     <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-[#2f6dff]/20 px-3 py-1 text-xs font-bold uppercase tracking-wide text-[#2f6dff] border border-[#2f6dff]/30">
-                       <FaGift className="h-3.5 w-3.5" />
-                       Exclusive Offer
-                     </div>
-                     <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Save on your deployment!</h3>
-                     <p className="mt-2 text-white/75 text-sm sm:text-base leading-relaxed">
-                       Use our exclusive partner promo code at checkout to get a special discount on your first Endercloud invoice.
-                     </p>
-                   </div>
-                   <div className="flex items-center justify-center shrink-0 w-full sm:w-auto">
-                      <div className="relative flex flex-col items-center gap-3 rounded-xl border border-dashed border-[#2f6dff]/50 bg-[#2f6dff]/5 p-5 transition-colors hover:bg-[#2f6dff]/10 hover:border-[#2f6dff] w-full sm:w-auto">
-                        <span className="text-xs font-medium text-white/50 uppercase tracking-widest">PROMO CODE</span>
-                        <div className="flex items-center gap-3">
-                           <span className="text-2xl sm:text-4xl font-mono font-black tracking-widest text-[#2f6dff] drop-shadow-[0_0_15px_rgba(47,109,255,0.4)]">SWELLY12</span>
-                        </div>
-                        <CopyButton text="SWELLY12" className="mt-2 w-full bg-[#2f6dff] hover:bg-[#2f6dff]/80 text-white font-semibold py-2.5 px-6 rounded-lg transition-all shadow-[0_0_15px_rgba(47,109,255,0.3)] hover:shadow-[0_0_25px_rgba(47,109,255,0.5)] border border-transparent hover:border-white/20" />
-                      </div>
-                   </div>
+          <ScrollReveal delay={0.2}>
+            <div className="mx-auto mt-14 max-w-4xl">
+              <div className="card flex flex-col sm:flex-row items-center justify-between gap-6 p-6 sm:p-8 rounded-2xl">
+                <div className="text-center sm:text-left flex-1">
+                  <div className="inline-flex items-center gap-2 mb-3 text-primary">
+                    <FaGift className="w-4 h-4" />
+                    <span className="font-semibold tracking-wide uppercase text-sm">Exclusive Offer</span>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-2">Save on your deployment</h3>
+                  <p className="text-white/70 text-sm md:text-base mb-0">
+                    Use our partner promo code at checkout for a special discount on your first Endercloud invoice.
+                  </p>
+                </div>
+                
+                <div className="flex flex-col items-center gap-3 p-5 rounded-xl border border-white/10 bg-black/40 min-w-[220px] shrink-0">
+                  <span className="text-xs text-white/50 uppercase tracking-widest font-medium">Promo Code</span>
+                  <span className="font-mono text-3xl font-bold tracking-wider text-white">SWELLY12</span>
+                  <CopyButton text="SWELLY12" className="btn btn-primary w-full mt-1" />
                 </div>
               </div>
             </div>
